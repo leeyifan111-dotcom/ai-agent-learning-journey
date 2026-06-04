@@ -1,0 +1,15 @@
+# IDE
+.idea/
+.vscode/
+
+# OMC (oh-my-claudecode) 本地状态
+.omc/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# 临时文件
+*.swp
+*.tmp
+*~
