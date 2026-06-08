@@ -35,11 +35,18 @@
 | 顺序 | 编号 | 标题                      | 文件                                     | 状态    |
 | ---- | ---- | ------------------------- | ---------------------------------------- | ------- |
 | 1    | #001 | 什么是 LLM Agent          | `./001-what-is-llm-agent.md`             | ✅ 已读 |
-| 2    | #021 | Function Calling 基础     | `./021-function-calling-basics.md`       | 📖 在读 |
-| 3    | #006 | Agent Loop 设计与错误恢复 | `./006-agent-loop-and-error-recovery.md` | ⏳ 待读 |
-| 4    | #022 | Tool Schema 设计          | `./022-tool-schema-design.md`            | ⏳ 待读 |
+| 2    | #021 | Function Calling 基础     | `./021-function-calling-basics.md`       | ✅ 已读 |
+| 3    | #006 | Agent Loop 设计与错误恢复 | `./006-agent-loop-and-error-recovery.md` | ✅ 已读 |
+| 4    | #022 | Tool Schema 设计          | `./022-tool-schema-design.md`            | ✅ 已读 |
 
 > 原则：「做中读」—— 带着 Day 1 写代码时的亲身困惑去印证，不追求记全
+
+## 📝 读后感（一句话自我总结，见 [read_fellings](read_feelings)）
+
+- **#001 — 什么是 LLM Agent**：Agent 的本质是**在环境中持续用工具推理决策直到目标达成**——有状态的、感知外界的、多步推理的、自主的、自适应的，而不是无状态的、单一问答的、被动响应的。
+- **#021 — Function Calling 基础**：Agent 通过工具定义让 LLM 生成 JSON 请求调用工具。工具组成为 `name / description / input_schema`；除此之外还要告诉 LLM 有哪些工具（schema），并在本地维护"工具名 → 函数"的派发表，调用结果回填后 LLM 再根据返回继续推理。
+- **#006 — Agent Loop 与错误恢复**：Agent 总有 loop 循环，为防无限循环需要**限制条件**（最大重试次数、单次任务最大时间、模型降级、网络抖动重试）和**确定的终止条件**（超过最大重试 / 单次最大时间 / 模型结束信号 / 重复任务 / 最大资源）。
+- **#022 — Tool Schema 设计**：Tools 定义三要素 `name / description / input_schema` 相辅相成，LLM 据此生成 JSON 调用参数。高质量的定义往往能减少 LLM 试错成本。
 
 ## ❓ 困惑/待消化
 
@@ -80,6 +87,26 @@ def detect_loop(history: list[str], window: int = 3) -> bool:
 **为什么 MemGPT 这么设计**：默认终止更安全 → 防止模型陷入循环烧 token（正好对应我 Day 1 观察到的"反复横跳"问题）。代价：对模型的指令遵循能力要求更高（必须明确表达"我还要继续"）。
 
 **启发**：`request_heartbeat` 本质是把「继续执行」从隐式假设变成**显式信号**。v0.2 加错误处理时可以借鉴这种思路 —— 让 LLM 主动表态是否继续，比纯靠 `max_turns` 兜底更优雅。
+
+---
+
+### Q3：多 Agent 的"乒乓球死循环" —— A 和 B 反复 handoff 怎么办？（#006 没讲，自己延伸）
+
+**场景**：客服系统中前台 A 把"账号登不上"丢给技术 B，B 觉得信息不够丢回 A，A 又觉得这是技术问题再丢给 B …… 死循环。
+
+**根因**：跟单 Agent 死循环本质同源 —— **没有"必须自己解决"的兜底路径**。
+
+- 单 Agent 版：工具坏了没 Plan B → 反复试同一个工具
+- 多 Agent 版：职责边界模糊 + handoff 是合法选项 → 互相踢皮球
+
+**4 种修复手段（由表入里）**：
+
+1. **全局 handoff 上限** —— 类似 `max_turns` 但作用域是整段对话，超限转人工（治标）
+2. **任务签名去重** —— `detect_loop` 思路升级：检测 `(from, to, task_hash)` 元组是否重复
+3. **中心调度（Orchestrator）** —— 取消对等 handoff，所有任务流转过仲裁者；LangGraph / AutoGen 的核心设计
+4. **system prompt 写死边界**（根治）—— 给每个 Agent 强制规定"信息不足时必须自己反问/给可执行建议，禁止退回"
+
+**伏笔**：阶段 3（#031 / #033 / #037）会正式学多 Agent 协作，回头印证这个推断对不对。
 
 ## 🚀 下一步
 

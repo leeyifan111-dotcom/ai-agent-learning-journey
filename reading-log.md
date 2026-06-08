@@ -5,19 +5,19 @@
 
 ## 阶段 1 · Agent 全景认知
 
-| #   | 标题                                                        | 状态 | 关联代码                          | 读后心得 / 困惑                    |
-| --- | ----------------------------------------------------------- | ---- | --------------------------------- | ---------------------------------- |
-| 001 | 什么是 LLM Agent？与传统 LLM 应用有何区别？                 | ⏳   | agent.py 整体                     | 带问题：Agent 和普通脚本本质区别   |
-| 002 | 解释 Agent 的核心组件：感知、推理、行动、记忆               | ⏳   | —                                 | —                                  |
-| 003 | Agent 架构模式：ReAct / Plan-and-Execute / LATS / Proactive | ⏳   | —                                 | —                                  |
-| 006 | Agent Loop 设计：循环控制、终止条件与错误恢复               | ⏳   | `for turn in range(max_turns)`    | 带问题：max_turns 的意义、错误恢复 |
-| 007 | Workflow vs Agent                                           | ⏳   | —                                 | —                                  |
-| 021 | Function Calling 基础                                       | ⏳   | `tools=tools` & `tool_calls` 处理 | 带问题：为什么 LLM 不直接执行函数  |
-| 022 | Tool Schema 设计                                            | ⏳   | `tools` 列表                      | 带问题：印证三要素互推结论         |
-| 027 | MCP（Model Context Protocol）                               | ⏳   | —                                 | —                                  |
-| 059 | System Prompt 设计核心原则                                  | ⏳   | —                                 | —                                  |
-| 061 | 结构化输出（JSON/XML）                                      | ⏳   | —                                 | —                                  |
-| 062 | Agentic Prompting                                           | ⏳   | —                                 | —                                  |
+| #   | 标题                                                        | 状态 | 关联代码                          | 读后心得 / 困惑                                             |
+| --- | ----------------------------------------------------------- | ---- | --------------------------------- | ----------------------------------------------------------- |
+| 001 | 什么是 LLM Agent？与传统 LLM 应用有何区别？                 | ✅   | agent.py 整体                     | 本质=在环境中持续用工具推理决策直到目标达成；五特征非单问答 |
+| 002 | 解释 Agent 的核心组件：感知、推理、行动、记忆               | ⏳   | —                                 | —                                                           |
+| 003 | Agent 架构模式：ReAct / Plan-and-Execute / LATS / Proactive | ⏳   | —                                 | —                                                           |
+| 006 | Agent Loop 设计：循环控制、终止条件与错误恢复               | ✅   | `for turn in range(max_turns)`    | 限制条件 + 确定终止条件双保险；衍生多 Agent 死循环延伸思考  |
+| 007 | Workflow vs Agent                                           | ⏳   | —                                 | —                                                           |
+| 021 | Function Calling 基础                                       | ✅   | `tools=tools` & `tool_calls` 处理 | LLM 生成 JSON 开工单，本地执行 + 回填；批量 vs 并行实验     |
+| 022 | Tool Schema 设计                                            | ✅   | `tools` 列表                      | 三要素 name/description/input_schema 相辅相成减少试错       |
+| 027 | MCP（Model Context Protocol）                               | ⏳   | —                                 | —                                                           |
+| 059 | System Prompt 设计核心原则                                  | ⏳   | —                                 | —                                                           |
+| 061 | 结构化输出（JSON/XML）                                      | ⏳   | —                                 | —                                                           |
+| 062 | Agentic Prompting                                           | ⏳   | —                                 | —                                                           |
 
 ## 阶段 2 · RAG（10 篇，待启动）
 
