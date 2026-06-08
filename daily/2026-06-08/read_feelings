@@ -1,0 +1,11 @@
+002 agent 工作流程:用户输入指令->初始化记忆容器(短期记忆)->llm进行推理分析(推理)->请求调用工具(行动)->返回工具结果解析并构造感知(感知)回填到短期记忆(全量投喂给llm)->进行循环到->llm认为结束or程序控制结束->返回结果。
+    记忆分为三种类型，工作记忆:单次任务、短期记忆:单次session、长期记忆:向量知识库。
+
+003 agent 的几种主流模式：react(动态灵活),plan-and-execute(结构性任务最强),lats(并行复杂能力最强),proactive(预测，人类友好)，
+    适用性：简单任务适合用react结合plan-and-execute+小模型，复杂任务且预算高推荐用lats+大模型，结构性强的任务用plan-and-execute，人类服务任务用proactive。
+    缺陷：react遇到工具问题容易进入死循环爆token；plan-and-execute遇到错误就停且容易产生幻觉；proactive难以调整到合适程度输出过多可能让人觉得烦，输出过少可能让人觉得不适用；lats成本高，简单问题也容易消耗大量token。
+    常见调优：react建议加上反思机制和最大尝试次数；plan-and-execute建议加上replanning；通用调优：引入人工介入(HITL)，当出现异常时，请求人工介入，由人工决策下一步计划。
+    plan-and-execute+replanning与react区别：react是每步都思考，再进行下一步决策，plan-and-execute+replanning是先整体规划→闷头执行→出错或完成时才重新规划。
+
+007 workflow与agent的明确分界点：利用llm进行流程决策的是agent，流程固定的为workflow。(写死顺序+llm = workflow，llm决定下一步动作 = agent，大流程workflow，灵活节点嵌入agent = workflow+agent)
+    使用场景：agent适用于路径不可预测、任务多样、探索性任务，如果以上几种类型的出错代价高，建议结合HITL使用。workflow适用于路径固定、任务需要可监控可审计且出错代价高任务。
