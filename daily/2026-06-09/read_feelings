@@ -6,4 +6,27 @@
     生产 system prompt 六件套：1)身份  2)工具使用规则(禁止用内置知识回答可查的信息)  3)不确定性处理(不知道说不知道)  4)思维触发(先思考再行动，#062 伏笔)  5)输出格式  6)结尾再重申关键约束。
     回到 Day 1：如果当时写了这段 prompt，工具改坏反复横跳大概率不会发生，但仍然不是 100%——所以 HITL 代码兜底永远是必要的(跟 #003 学到的"通用调优"对上了)。
 
-061
+061 结构化输出本质：强制(代码/API 层) vs 信任(LLM 自觉)；可靠性差一个数量级。
+      三种拿法（可靠性高→低，灵活性低→高）：
+          1) Function Calling：API 解码层 constrained decoding + 模型训练双重保证，99.9%+
+          2) JSON Mode：response_format={"type":"json_object"} 让 API 强制输出合法 JSON，~99%
+          3) prompt 里求 LLM 自觉吐 JSON：纯靠 #059 软约束，60-90% 看脸
+      JSON Schema 是 API 和 LLM 共享的契约语言（两边都要看）——Day 1 写错 "list(string)" 那次两边都崩，不是单边问题。
+      Phase 2 RAG eval 打分选 JSON Mode 最香：不用假装调工具，三行代码稳拿 {"score":N,"reason":"..."}，崩盘风险极低。
+      跟 #059 串联：System prompt 是软约束教育模型；结构化输出是硬约束强制 API——两层叠加才是生产做法（教育+法律双轨）。
+
+
+
+062 Agentic Prompting 核心心法：显式优于隐式（What, not How）——告诉模型做什么有边界，怎么做留自由度。
+      比普通 prompt 多出的三块（Agent 特有）：
+          1) 循环意识：明确告知"你在 Agent 循环里，每步要 thought + action"
+          2) 反思触发：每次工具返回后先反思（结果符合预期吗？是参数错还是工具坏？）
+          3) 终止判断：完成→FINAL ANSWER；失败→CANNOT COMPLETE，显式声明不留隐式
+      跟 #059 区别一句话：#059 告诉模型"边界"（防做错事），#062 告诉模型"怎么思考"（防做傻事）；
+          其实我 #059 写的六件套已经偷偷越界到 #062 范畴了——加上"循环/反思/终止"三块就是完整 Agentic prompt。
+      跟 #061 串联（最重要）：生产做法是软硬约束双轨——
+          软约束：Agentic prompt 教思维流程（"先 thought 再 action"）
+          硬约束：JSON Mode 保格式（response_format 强制 {"thought":..., "action":...}）
+          二者配套，缺一不可（教育 + 法律双轨在 Agent 场景的落地）。
+      回到 Day 1：反复横跳的修复力度递增——普通 system prompt → Agentic prompt → Agentic + JSON Mode；
+          最后一档几乎不会失效，因为模型必须在"反思 → 决策（retry/stop 枚举）"的硬结构里走，瞎试空间被掐死。
