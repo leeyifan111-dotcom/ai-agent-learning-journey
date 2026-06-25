@@ -2,21 +2,36 @@
 
 > 每个项目对应学习路线的一个阶段，是「能力变作品」的证据
 
-## tiny-agent-loop（阶段 1 · 🟢 v0.1 已发布）
+## tiny-agent-loop（阶段 1 · ✅ v0.4 已发布）
 
 - **GitHub**：https://github.com/leeyifan111-dotcom/tiny-agent-loop
 - **本地路径**：`D:\ai学习\ai-agent\tiny-agent-loop\`
-- **完成日**：2026-06-04
-- **简介**：从零手写的最小 AI Agent 循环（~60 行），基于 DeepSeek API，跑通 LLM 决策 → 工具执行 → 结果回填 → 再决策的完整闭环
-- **对应知识库**：#001 #006 #021 #022
-- **下个里程碑（v0.2）**：加错误处理、结构化日志、把假天气换成真 API（wttr.in）；流式输出可选
+- **起点**：2026-06-04（v0.1） · **v0.4 收官**：2026-06-25
+- **简介**：从最小 Agent 循环演化到「反复横跳治愈包」——Phase 1 全部知识落地的实战项目
+- **v0.4 六大升级**（每个挂复习钩子，对应 Phase 1 文章）：
+  - TOOL_REGISTRY dict 派发（#021）
+  - system prompt 六件套 + 自我正当化检测（#059 + #062）
+  - 错误分层 dispatch + 重试上限（#006）
+  - turn signature 跨轮循环检测（#006 Q1）
+  - JSON Mode + llm_reflect 软硬约束双轨（#061 + #062）
+  - HITL input() 兜底（#003 + #007）
+- **对应知识库**：#001 #002 #003 #006 #007 #021 #022 #027 #059 #061 #062（Phase 1 全部 11 篇）
+- **下个里程碑（v0.5 候选）**：把 get_weather 改成 HTTP API → 让 HITL 链路真闭环（Day 5 推导出的 MCP 必然性）
 
-## tiny-rag（阶段 2 · ⚪ 未启动）
+## tiny-rag（阶段 2 · 🟢 v0.1 进行中）
 
-- **预计起点**：阶段 1 阅读收尾后
-- **简介**：搭建一个简单 RAG 系统，支持文档分块、向量检索、Re-ranking
-- **对应知识库**：#011 #012 #013 #016 #017 #020
-- **可选数据源**：你自己的工作文档、日志、笔记 —— 接真实数据是亮点
+- **GitHub**：https://github.com/leeyifan111-dotcom/tiny-rag
+- **本地路径**：`D:\ai学习\ai-agent\tiny-rag\`
+- **起点**：2026-06-26（骨架 + 语料就位）
+- **简介**：给 LLM 装上「长期记忆」的最小可用 RAG 系统——文档→分块→embedding→检索→生成
+- **当前状态**：scaffold 完成（indexer/retriever/rag 三件套 stub）+ 10 篇 RAG 文档当测试语料
+- **路线**：
+  - v0.1（读完 #013-#015 后）：固定分块 + FAISS 内存版 + 单轮检索生成
+  - v0.2（读完 #016-#017 后）：混合检索（BM25 + 向量）+ Re-ranking
+  - v0.3（读完 #018-#020 后）：JSON Mode eval + 高级查询变体（HyDE / Decomposition）
+  - v0.4：跟 tiny-agent-loop 集成 → Agentic RAG
+- **对应知识库**：#011-#020 全部 10 篇
+- **金句**：用 RAG 系统答 RAG 知识——能问"什么是 HyDE"让 tiny-rag 自己从语料里答出来就成功
 
 ## tiny-multi-agent / 扩展 tiny-rag（阶段 3 · ⚪ 未启动）
 
