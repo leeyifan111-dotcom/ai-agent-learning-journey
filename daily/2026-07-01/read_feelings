@@ -1,0 +1,10 @@
+018 agentic rag和普通的rag区别就是是否由llm在循环中自主判断是否需要调用rag，更适用于agent loop。
+    但并不是所有场景都适用agentic rag，在循环中让llm调用就注定成本可能不可控，时间也可能会拉的比较长，所以对于一些简单的固定流程场景使用rag就够用了，对于需要多向量库支撑agent、需要有自我纠错能力就是用agentic rag
+    实现agentic rag的方式是将已有的retriever.search() 注册成一个工具(定义工具(name,description,schema)，实现工具功能)，在循环的过程中，让llm决定要不要请求调用："这个问题需要调 search_knowledge 吗？调一次够不够？要不要换 query 再搜？"
+    上面提到了agentic rag的成本不可控，所以也是需要限制次数、超时时间以及退避降级等策略控制成本。
+
+019 advanced rag variants 主要是在 RAG pipeline 的不同控制点加决策机制：
+  Adaptive RAG 是检索前路由，根据 query 复杂度决定不检索、标准 RAG、多跳检索或更复杂的验证流程。它的核心不是 agentic，而是 query routing；agentic rag 可以作为复杂分支的一种实现。
+  Corrective RAG 是检索后、生成前的质量控制。它用 evaluator 判断检索结果是 relevant / ambiguous / irrelevant，如果检索质量不足，就触发 web search 或知识精炼来补充上下文。
+  Self-RAG 是检索前和生成后的自我反思机制。原版 Self-RAG 不是普通 prompt 自评，而是通过 reflection token / critique token 微调模型，让模型判断是否需要检索、检索结果是否相关、回答是否被证据支撑、回答是否有用。
+  和 Agentic RAG 的关系：Agentic RAG 关注“谁来控制检索”——LLM 在 loop 中自主调用 retriever；这三种高级 RAG 关注“在哪个环节加控制”——检索前路由、检索后纠错、生成后自评。它们可以组合进 agentic rag，也可以用于普通 workflow/pipeline。
