@@ -8,3 +8,10 @@
   Corrective RAG 是检索后、生成前的质量控制。它用 evaluator 判断检索结果是 relevant / ambiguous / irrelevant，如果检索质量不足，就触发 web search 或知识精炼来补充上下文。
   Self-RAG 是检索前和生成后的自我反思机制。原版 Self-RAG 不是普通 prompt 自评，而是通过 reflection token / critique token 微调模型，让模型判断是否需要检索、检索结果是否相关、回答是否被证据支撑、回答是否有用。
   和 Agentic RAG 的关系：Agentic RAG 关注“谁来控制检索”——LLM 在 loop 中自主调用 retriever；这三种高级 RAG 关注“在哪个环节加控制”——检索前路由、检索后纠错、生成后自评。它们可以组合进 agentic rag，也可以用于普通 workflow/pipeline。
+
+
+020 RAG 评估核心三指标：
+      - Faithfulness：答案有没有编造？LLM-as-Judge + JSON Mode 打分 1-5
+      - Relevance：资料跟问题有关吗？检索前判可省生成 token
+      - Recall@K：前 K 条有没有命中正确答案？调 chunk_size / top_k 的反馈信号
+      rag.py 的 evaluate() 用 JSON Mode 实现 faithfulness + relevance 双维度打分
