@@ -34,27 +34,25 @@ Plan-and-Solve (PS)：
 ```python
 # 基础 PS Prompt
 ps_prompt = """
-{question}
+{问题}
 
-Let's first understand the problem and devise a plan to solve it.
-Then, let's carry out the plan and solve the problem step by step.
+请先理解问题，然后制定一个解决计划。
+再按计划逐步执行并解决问题。
 """
 
 # 增强版 PS+ Prompt（加入更详细的指令）
 ps_plus_prompt = """
-{question}
+{问题}
 
-Let's first understand the problem, extract relevant variables
-and their corresponding numerals, and devise a plan to solve it.
-Then, let's carry out the plan, calculate intermediate results
-(pay attention to correct numerical calculation and commonsense),
-and solve the problem step by step.
+请先理解问题，提取相关变量及其对应数值，然后制定一个解决计划。
+接着按计划执行，计算中间结果（注意数值计算的正确性和常识），
+逐步解决问题。
 """
 
 # PS+ 的三个关键增强：
-# 1. "extract relevant variables" → 防止遗漏关键信息
-# 2. "calculate intermediate results" → 强制记录中间结果
-# 3. "pay attention to correct numerical calculation" → 减少计算错误
+# 1. "提取相关变量" → 防止遗漏关键信息
+# 2. "计算中间结果" → 强制记录中间结果
+# 3. "注意数值计算的正确性" → 减少计算错误
 ```
 
 ### 三、基准测试结果
@@ -467,7 +465,7 @@ replanning_principles = {
 | 高可靠性 | Plan + 人工审核 | 计划可被人类审核和修改 |
 | 长时域复杂任务 | DuSAR / ALAS | 需要经验积累和事务性保障 |
 
-## 常见误区 / 面试追问
+## 常见误区
 
 1. **误区："Plan-and-Solve 就是 Chain-of-Thought 的变体"** — PS 不仅是让模型"逐步思考"，而是明确将过程分为"规划"和"执行"两个独立阶段。CoT 是一次性生成推理链，PS 是先生成计划再按计划执行。
 
